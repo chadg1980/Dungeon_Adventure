@@ -18,8 +18,8 @@ int permissions(){
 	/*I got a hint about file permission being octal
 	http://bytes.com/topic/c/answers/459585-string-octal */
 	
-	/*folder permissions 777, in octal*/
-	char chMod[] = "0777";
+	/*folder permissions 770, in octal*/
+	char chMod[] = "0770";
 	int octal = strtol(chMod, 0, 8);
 
 	return octal;
@@ -30,8 +30,7 @@ int main(){
 	
 	/*get the permissions for the directory*/	
 	int perm = permissions();
-	
-	
+	char dirname[33] = "glaserc.rooms.";
 	
 	/*------------get PID as int then int to string-----------*/
 	int myPid = getpid();
@@ -41,12 +40,33 @@ int main(){
 	
 	/*------------append pid to dirname--------*/
 	strcat(dirname, buffer);
+	mkdir(dirname, perm);
 	
 	
-	/*make the directory, print out dir name and pid name*/
-	mkdir(folder, perm);
-	printf("dirname: %s\n", folder);
+	/*Print for error checking*/
+	printf("dirname: %s\n", dirname);
 	printf("PID: %d\n", myPid);
+	
+	/*Starting with file creation*/
+	
+	char file1[80];
+	char room1[33] = "bunker.txt";
+	
+	sprintf(file1, "./%s/%s", dirname, room1);
+	int fd1 = open(file1, O_RDWR | O_CREAT, perm);
+		
+		printf("file1: %s\n", file1);
+		if (fd1 == -1)
+			{
+			fprintf(stderr, "Could not open %s\n", room1);
+			exit(1);
+			}
+		else
+			printf("start with roome one\n");
+	
+	
+	
+	
 
 	exit(0);
 }
