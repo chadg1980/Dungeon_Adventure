@@ -29,6 +29,7 @@ int permissions(){
 int main(){
 	
 	/*get the permissions for the directory*/	
+	int i;
 	int perm = permissions();
 	char dirname[33] = "glaserc.rooms.";
 	
@@ -48,25 +49,32 @@ int main(){
 	printf("PID: %d\n", myPid);
 	
 	/*Starting with file creation*/
+	/*room names*/
 	
-	char file1[80];
-	char room1[33] = "bunker.txt";
 	
-	sprintf(file1, "./%s/%s", dirname, room1);
-	int fd1 = open(file1, O_RDWR | O_CREAT, perm);
+	for (i = 0; i < 6; i++){
+		char roomName[80];
+		char file[80];
+		sprintf(roomName, "room%d.txt", i);
+		printf ("%s\n", roomName); 
 		
-		printf("file1: %s\n", file1);
-		if (fd1 == -1)
+	sprintf(file, "./%s/%s", dirname, roomName);
+	FILE *fp;
+	fp = fopen(file, "a");
+		
+		printf("file%d: %s\n",i, file);
+		if (fp == 0)
 			{
-			fprintf(stderr, "Could not open %s\n", room1);
+			fprintf(stderr, "Could not open %s\n", file);
 			exit(1);
 			}
-		else
-			printf("start with roome one\n");
+		
+		
+		fclose(fp);
+			
+	}
 	
 	
+exit(0);
 	
-	
-
-	exit(0);
 }
