@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 #include <sys/fcntl.h>
 #include <string.h>
+#include <time.h>
 
 int permissions(){
 	/*I got a hint about file permission being octal
