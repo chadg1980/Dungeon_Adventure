@@ -19,59 +19,65 @@ struct textFile{
 	char fileName[80];
 };
 
+void swap (int *a, int *b){
 
-void swap (char **a, char **b){
-
-	char *temp = *a;
+	int temp = *a;
 	*a = *b;
 	*b = temp;
 }
 
+void randArr(int arr[], int n){
+	int i, j, k;
+	
+	srand( time(NULL));
+	for (j = n-1; j > 0; j--){
+		k = rand() % (j+1);
+		swap(&arr[j], &arr[k]);
+	}
+	
+	
+}
+
+
+
+
+
+
 void printArr( int arr[], int n){
 	int i;
-	for (i = 0; i < n; i++
-		printf("num: %d, " arr[i];
+	for (i = 0; i < n; i++)
+		printf("num: %d, ", arr[i]);
 	printf("\n");
 
 }
 
-
-
-
-
-
 int main(){
-int i, j, k, n;
 
-int arr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,};
+	const char *title[10];
+	int n = 10;
+	int arr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,};
+	int ray[10];
+	int i;
+	randArr(arr, n);
+	printArr(arr, n);
 
-
-
-char *title[10];
-title[arr[0]] = "Bunker";
-title[arr[1]] = "Stairway";
-title[arr[2]] = "Tunnel";
-title[arr[3]] = "Cavern";
-title[arr[4]] = "Cliff";
-title[arr[5]] = "Crystal Room";
-title[arr[6]] = "Spring Lake";
-title[arr[7]] = "Toadstool";
-title[arr[8]] = "Gully";
-title[arr[9]] = "The Dark";
-
-n = 7;
-srand( time(NULL));
+	title[arr[0]] = "Bunker";
+	title[arr[1]] = "Stairway";
+	title[arr[2]] = "Tunnel";
+	title[arr[3]] = "Cavern";
+	title[arr[4]] = "Cliff";
+	title[arr[5]] = "Crystal Room";
+	title[arr[6]] = "Spring Lake";
+	title[arr[7]] = "Toadstool";
+	title[arr[8]] = "Gully";
+	title[arr[9]] = "The Dark";
 	
-	for (j = n-1; j < 0; j--){
-		k = rand() % (j+1);
-		swap(&arr[j], &arr[k]);
+		
+	for (i = 0; i < n; i++){
+
+	printf("room[%d]: %s\n", i, title[i]);
+
 	}
-
-for (i = 0; i < n; i++){
-
-printf("room[%d]: %s\n", i, title[i]);
-
-}
 
 return 0;
 }

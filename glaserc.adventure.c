@@ -15,6 +15,24 @@
 #include <string.h>
 #include <time.h>
 
+/*Helper function for randomize*/
+void swap (int *a, int *b){
+
+	int temp = *a;
+	*a = *b;
+	*b = temp;
+}
+/*function to randomize the rooms*/
+void randArr(int arr[], int n){
+	int j, k;
+	
+	srand( time(NULL));
+	for (j = n-1; j > 0; j--){
+		k = rand() % (j+1);
+		swap(&arr[j], &arr[k]);
+	}
+}
+
 int permissions(){
 	/*I got a hint about file permission being octal
 	http://bytes.com/topic/c/answers/459585-string-octal */
@@ -30,10 +48,15 @@ int permissions(){
 int main(){
 	
 	/*get the permissions for the directory*/	
-	int i;
+	int i, j;
 	int perm = permissions();
 	char dirname[33] = "glaserc.rooms.";
+	char *title[10];
+	int n = 10;
+	int arr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,};
+	randArr(arr, n);
 	
+		
 	/*------------get PID as int then int to string-----------*/
 	int myPid = getpid();
 	char buffer[33];
@@ -50,29 +73,35 @@ int main(){
 	printf("PID: %d\n", myPid);
 	
 	/*Starting with file creation*/
+	
 	/*room names*/
+	title[arr[0]] = "Bunker";
+	title[arr[1]] = "Stairway";
+	title[arr[2]] = "Tunnel";
+	title[arr[3]] = "Cavern";
+	title[arr[4]] = "Cliff";
+	title[arr[5]] = "Crystal Room";
+	title[arr[6]] = "Spring Lake";
+	title[arr[7]] = "Toadstool";
+	title[arr[8]] = "Gully";
+	title[arr[9]] = "The Dark";
 	
-	
+	/*creating files*/
 	for (i = 0; i < 6; i++){
-		char roomName[80];
+		
 		char file[80];
-		sprintf(roomName, "room%d.txt", i);
-		printf ("%s\n", roomName); 
-		
-	sprintf(file, "./%s/%s", dirname, roomName);
-	FILE *fp;
-	fp = fopen(file, "a");
-		
+			
+		sprintf(file, "./%s/%s", dirname, title[i]);
+		FILE *fp;
+		fp = fopen(file, "a");
 		printf("file%d: %s\n",i, file);
-		if (fp == 0)
-			{
+		
+		if (fp == 0){
 			fprintf(stderr, "Could not open %s\n", file);
 			exit(1);
-			}
-		
-		
+		}
+				
 		fclose(fp);
-			
 	}
 	
 	
