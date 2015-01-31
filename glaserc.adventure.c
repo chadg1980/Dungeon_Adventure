@@ -15,6 +15,9 @@
 #include <string.h>
 #include <time.h>
 
+
+
+
 /*Helper function to randomize*/
 void swap (int *a, int *b){
 
@@ -100,30 +103,23 @@ int main(){
 	/*creating files*/
 	
 	
+	char fullNames[7][200];
 	
-	for (i = 0; i < 6; i++){
+	for (i = 0; i <= 6; i++){
+		
 		char file[80];
+		
 		sprintf(file, "./%s/%s", dirname, title[i]);
+				strcpy(fullNames[i], file);
+		FILE *fp;
+		fp = fopen(file, "a");
+		printf("file%d: %s\n",i, file);
+		
+		if (fp == 0){
+			fprintf(stderr, "Could not open %s\n", file);
+			exit(1);
+		}
 			
-		FILE *fp;
-		fp = fopen(file, "a");
-		printf("file%d: %s\n",i, file);
-		
-		if (fp == 0){
-			fprintf(stderr, "Could not open %s\n", file);
-			exit(1);
-		}
-	
-	
-	
-		FILE *fp;
-		fp = fopen(file, "a");
-		printf("file%d: %s\n",i, file);
-		
-		if (fp == 0){
-			fprintf(stderr, "Could not open %s\n", file);
-			exit(1);
-		}
 		/*Putting the room name inside the text*/
 		fprintf(fp, "\nROOM NAME: %s\n", title[i]);
 		printf("\nROOM NAME: %s\n", title[i]);
@@ -134,74 +130,93 @@ int main(){
 			printf("This room will get %d connections\n", q);
 			k = 1;
 		
-			
-			
 			if(i == 0){
-				for (k =1; k < q; k++){
+				for (k =1; k <= q; k++){
 					fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
 					printf("CONNECTION %d: %s\n",k, title[i+k]);
 				}	
 			}
 			
-			else if( i == 5){
+			else if( i == 6){
 				for (k =1; k <= q; k++){
+					
 					fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
 					printf("CONNECTION %d: %s\n",k, title[i-k]);
 				}
 			}
 			
 			else {
-				if (i < 3){
+				if (i <= 3){
 					k = 1;
 					fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
-					fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
+					fprintf(fp, "CONNECTION %d: %s\n",(k+1), title[i+k]);
 					
 					printf("CONNECTION %d: %s\n",k, title[i-k]);
 					printf("CONNECTION %d: %s\n",(k+1), title[i+k]);
-						for (k =2; k <= q; k++){
+						for (k =3; k <= q; k++){
+							
 							fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
 							printf("CONNECTION %d: %s\n",k, title[i+k]);
-					}
+						}
 				}
-				if(i >= 3)
+				
+				if(i >= 4){
 					k = 1;
 					fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
-					fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
+					fprintf(fp, "CONNECTION %d: %s\n",(k+1), title[i+k]);
 					
 					printf("CONNECTION %d: %s\n",k, title[i-k]);
 					printf("CONNECTION %d: %s\n",(k+1), title[i+k]);
 					
 					
-					for (k =2; k <= q; k++){
-						fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
-						printf("CONNECTION %d: %s\n",k, title[i-k]);
+					for (k =3; k <= q; k++){
+						if(i - k <= 0){
+							printf("CONNECTION %d: %s\n",k, title[k - i]);
 						}
-					
+						else{
+							fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
+							printf("CONNECTION %d: %s\n",k, title[i-k]);
+						}
+						
+					}
+				}	
 			}
-			
-			
-			
-		/*}*/
-		
-				
+					
 		/*Assign a room type */
 		if (i == 0){
 		fprintf(fp, "Room TYPE: START_ROOM\n", title[i]);
 		printf("Room TYPE: START_ROOM\n", title[i]);
 		
 		}
-		else if(i == 5){
+		else if(i == 6){
 			fprintf(fp, "Room TYPE: END_ROOM\n", title[i]);
 			printf("Room TYPE: END_ROOM\n", title[i]);
 		}
 		else{
+			fprintf(fp, "Room TYPE: MID_ROOM\n\n", title[i]);
 			printf("Room TYPE: MID_ROOM\n\n", title[i]);
 		}
 		
 		fclose(fp);
 	}
 	
+	/*fullNames[7][200];*/
+	printf("-----------------BUFFER-----------------\n");
+	printf("full name: %s\n\n", fullNames[5]);
 	
+	FILE *newFile;
+	int numCount;
+		newFile = fopen(fullNames[5], "r");
+	if (newFile){
+			while((numCount = getc(newFile))!=EOF)
+			putchar(numCount);
+		}
+		
+		
+	fclose (newFile);
+	
+		
+		
 exit(0);
 	
 }
