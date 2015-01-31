@@ -15,6 +15,14 @@
 #include <string.h>
 #include <time.h>
 
+struct thisRoom{
+	char roomName[20];		//just the name of the room
+	char fullName[80];		//full path and file name of each room file
+	
+	int type;				//type string in file, but int for game. (1 start, 3 finish, 2 mid)
+	char connection[6][80];	//Connection 1 to 6
+	
+};
 
 
 
@@ -54,15 +62,23 @@ int permissions(){
 	return octal;
 }
 
-
+/*-------------------MAIN STARTS HERE-------------------------*/
 int main(){
-	int i, j, k, q;
+	int i;
 	char myname[33] = "glaserc.rooms.";
 	char dirname[66];
-	const char *title[10];
 	int n = 10;
 	int arr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,};
 	randArr(arr, n);
+	int start = 0;
+	int mid = 0;
+	int	end = 0;
+	/*start the struct of 10 rooms*/
+	struct thisRoom room[10];
+		for(i = 0; i <10; i++){
+	struct thisRoom room[i];
+	}
+	
 	
 	/* to check, must uncomment the function also
 	printArr(arr, n);*/
@@ -89,133 +105,114 @@ int main(){
 	/*-----------Starting with file creation----------*/
 	
 	/*room names, the array numbers are random each run of the program*/
-	title[arr[0]] = "Bunker";
-	title[arr[1]] = "Stairway";
-	title[arr[2]] = "Tunnel";
-	title[arr[3]] = "Cavern";
-	title[arr[4]] = "Cliff";
-	title[arr[5]] = "Crystal Room";
-	title[arr[6]] = "Spring Lake";
-	title[arr[7]] = "Toadstool";
-	title[arr[8]] = "Gully";
-	title[arr[9]] = "The Dark";
+	/*Names based on Seahawks schedule*/
+	sprintf(room[arr[0]].roomName, "Green Bay");
+	sprintf(room[arr[1]].roomName, "San Diego");
+	sprintf(room[arr[2]].roomName, "Denver");
+	sprintf(room[arr[3]].roomName, "Washington");
+	sprintf(room[arr[4]].roomName, "Dallas");
+	sprintf(room[arr[5]].roomName, "Carolina");
+	sprintf(room[arr[6]].roomName, "Arizona");
+	sprintf(room[arr[7]].roomName, "St Louis");
+	sprintf(room[arr[8]].roomName, "Oakland");
+	sprintf(room[arr[9]].roomName, "New York");
 	
-	/*creating files*/
+	/*print out the rooms, so I know the order, comment out for final product*/
+	for (i = 0; i < 10; i++){
 	
-	
-	char fullNames[7][200];
-	
-	for (i = 0; i <= 6; i++){
-		
-		char file[80];
-		
-		sprintf(file, "./%s/%s", dirname, title[i]);
-				strcpy(fullNames[i], file);
-		FILE *fp;
-		fp = fopen(file, "a");
-		printf("file%d: %s\n",i, file);
-		
-		if (fp == 0){
-			fprintf(stderr, "Could not open %s\n", file);
-			exit(1);
-		}
-			
-		/*Putting the room name inside the text*/
-		fprintf(fp, "\nROOM NAME: %s\n", title[i]);
-		printf("\nROOM NAME: %s\n", title[i]);
-		/*Assinging Connectionsrand */
-			q = 0;
-			q = rand() % 4;
-			q = q+3;
-			printf("This room will get %d connections\n", q);
-			k = 1;
-		
-			if(i == 0){
-				for (k =1; k <= q; k++){
-					fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
-					printf("CONNECTION %d: %s\n",k, title[i+k]);
-				}	
-			}
-			
-			else if( i == 6){
-				for (k =1; k <= q; k++){
-					
-					fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
-					printf("CONNECTION %d: %s\n",k, title[i-k]);
-				}
-			}
-			
-			else {
-				if (i <= 3){
-					k = 1;
-					fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
-					fprintf(fp, "CONNECTION %d: %s\n",(k+1), title[i+k]);
-					
-					printf("CONNECTION %d: %s\n",k, title[i-k]);
-					printf("CONNECTION %d: %s\n",(k+1), title[i+k]);
-						for (k =3; k <= q; k++){
-							
-							fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
-							printf("CONNECTION %d: %s\n",k, title[i+k]);
-						}
-				}
-				
-				if(i >= 4){
-					k = 1;
-					fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
-					fprintf(fp, "CONNECTION %d: %s\n",(k+1), title[i+k]);
-					
-					printf("CONNECTION %d: %s\n",k, title[i-k]);
-					printf("CONNECTION %d: %s\n",(k+1), title[i+k]);
-					
-					
-					for (k =3; k <= q; k++){
-						if(i - k <= 0){
-							printf("CONNECTION %d: %s\n",k, title[k - i]);
-						}
-						else{
-							fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
-							printf("CONNECTION %d: %s\n",k, title[i-k]);
-						}
-						
-					}
-				}	
-			}
-					
-		/*Assign a room type */
-		if (i == 0){
-		fprintf(fp, "Room TYPE: START_ROOM\n", title[i]);
-		printf("Room TYPE: START_ROOM\n", title[i]);
-		
-		}
-		else if(i == 6){
-			fprintf(fp, "Room TYPE: END_ROOM\n", title[i]);
-			printf("Room TYPE: END_ROOM\n", title[i]);
-		}
-		else{
-			fprintf(fp, "Room TYPE: MID_ROOM\n\n", title[i]);
-			printf("Room TYPE: MID_ROOM\n\n", title[i]);
-		}
-		
-		fclose(fp);
+	printf("Thisroom: %s\n", room[i].roomName);
 	}
 	
-	/*fullNames[7][200];*/
-	printf("-----------------BUFFER-----------------\n");
-	printf("full name: %s\n\n", fullNames[5]);
-	
-	FILE *newFile;
-	int numCount;
-		newFile = fopen(fullNames[5], "r");
-	if (newFile){
-			while((numCount = getc(newFile))!=EOF)
-			putchar(numCount);
+	/*make the files*/
+	for( i = 0; i < 7; i++){
+		/*file is recreated each iteration*/
+		char localFile[80];
+		FILE *fpoint;
+		int k, q;
+		
+		sprintf(room[i].fullName, "./%s/%s", dirname, room[i].roomName);
+			//strcpy(localFile, room[i].fullName);
+		
+		fpoint = fopen(room[i].fullName, "a");
+		if (fpoint == 0){
+			fprintf(stderr, "Could not open %s\n", room[i].fullName);
+			exit(1);
 		}
+		printf("file: %s, open \n", room[i].fullName);
 		
+		/*write the room name to a file*/
+		fprintf(fpoint, "ROOM NAME: %s\n", room[i].roomName); 
 		
-	fclose (newFile);
+		/*Assign Connections*/
+			/*room i, connection k*/
+		q = rand() %4 + 3;
+		for(k = 1; k <= q; k++){	
+			if( (i + k) < 6){
+					sprintf(room[i].connection[k], room[i+k].roomName); 
+					fprintf(fpoint, "CONNECTION %d: %s\n", k, room[i+k].roomName);
+					printf("CONNECTION %d: %s\n", k, room[i+k].roomName);
+				}
+			else if ((i - k) >= 0){
+					sprintf(room[i].connection[k], room[i-k].roomName); 
+					fprintf(fpoint, "CONNECTION %d: %s\n", k, room[i-k].roomName);
+					printf("CONNECTION %d: %s\n", k, room[i-k].roomName);
+			}
+			else{
+					sprintf(room[i].connection[k], room[k-i].roomName); 
+					fprintf(fpoint, "CONNECTION %d: %s\n", k, room[k-i].roomName);
+					printf("CONNECTION %d: %s\n", k, room[k-i].roomName);
+			}
+		
+		}
+		/*assigning room type(pseudo random)*/
+			int w = 0;
+			w = rand() % 3 + 1;
+			if( w == 1){
+				if(start == 0){
+					fprintf(fpoint, "ROOM TYPE: START_ROOM\n");
+					printf("ROOM TYPE: START_ROOM\n");
+					room[i].type = 1;
+					start++;
+				}
+				else
+					w++;
+			}
+			if( w ==3){
+				if(end == 0){
+					fprintf(fpoint, "ROOM TYPE: END_ROOM\n");
+					printf("ROOM TYPE: END_ROOM\n");
+					room[i].type = 3;
+					end++;
+				}
+				else
+					w--;
+			}
+			if (w == 2){
+				if (mid <= 5){
+					fprintf(fpoint, "ROOM TYPE: MID_ROOM\n");
+					printf("ROOM TYPE: MID_ROOM\n");
+					room[i].type = 2;
+					mid++;
+				}
+				else if(start == 0){
+					fprintf(fpoint, "ROOM TYPE: START_ROOM\n");
+					printf("ROOM TYPE: START_ROOM\n");
+					room[i].type = 1;
+					start++;
+				}
+				else{
+					fprintf(fpoint, "ROOM TYPE: END_ROOM\n");
+					printf("ROOM TYPE: END_ROOM\n");
+					room[i].type = 3;
+					end++;
+				}
+			}
+			
+		
+		fclose(fpoint);
+	}
 	
-		
+	
 		
 exit(0);
 	
