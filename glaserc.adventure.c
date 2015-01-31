@@ -15,7 +15,7 @@
 #include <string.h>
 #include <time.h>
 
-/*Helper function for randomize*/
+/*Helper function to randomize*/
 void swap (int *a, int *b){
 
 	int temp = *a;
@@ -26,13 +26,20 @@ void swap (int *a, int *b){
 void randArr(int arr[], int n){
 	int j, k;
 	
-	( time(NULL)); 
+	srand( time(NULL)); 
 	for (j = n-1; j > 0; j--){
 		k = rand() % (j+1);
 		swap(&arr[j], &arr[k]);
 	}
 }
-
+/*double check the numbers are random
+void printArr( int arr[], int n){
+	int i;
+	for (i = 0; i < n; i++)
+		printf("num: %d, ", arr[i]);
+	printf("\n");
+}
+*/
 int permissions(){
 	/*I got a hint about file permission being octal
 	http://bytes.com/topic/c/answers/459585-string-octal */
@@ -46,18 +53,18 @@ int permissions(){
 
 
 int main(){
-	
-	/*seeding random numbers*/
-	( time(NULL)); 
-	
 	int i, j, k, q;
-	char dirname[33] = "glaserc.rooms.";
+	char myname[33] = "glaserc.rooms.";
+	char dirname[66];
 	const char *title[10];
 	int n = 10;
 	int arr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,};
 	randArr(arr, n);
 	
-	/*ger permissions (octal)*/
+	/* to check, must uncomment the function also
+	printArr(arr, n);*/
+	
+	/*get permissions (octal)*/
 	int perm = permissions();
 	
 	/*------------get PID as int then int to string-----------*/
@@ -66,18 +73,19 @@ int main(){
 	snprintf(buffer, 33, "%d", myPid);
 	printf("buffer is: %s\n", buffer);
 	
-	/*------------append pid to dirname--------*/
-	strcat(dirname, buffer);
+	/*---------------append pid to dirname--------------------*/
+	/*strcat(dirname, buffer);*/
+	sprintf(dirname, "%s%s",myname, buffer);
 	mkdir(dirname, perm);
 	
 	
-	/*Print for error checking*/
+	/*Print for error checking Delete before handing in*/
 	printf("dirname: %s\n", dirname);
 	printf("PID: %d\n", myPid);
 	
-	/*Starting with file creation*/
+	/*-----------Starting with file creation----------*/
 	
-	/*room names*/
+	/*room names, the array numbers are random each run of the program*/
 	title[arr[0]] = "Bunker";
 	title[arr[1]] = "Stairway";
 	title[arr[2]] = "Tunnel";
@@ -90,11 +98,24 @@ int main(){
 	title[arr[9]] = "The Dark";
 	
 	/*creating files*/
+	
+	
+	
 	for (i = 0; i < 6; i++){
-		
 		char file[80];
-			
 		sprintf(file, "./%s/%s", dirname, title[i]);
+			
+		FILE *fp;
+		fp = fopen(file, "a");
+		printf("file%d: %s\n",i, file);
+		
+		if (fp == 0){
+			fprintf(stderr, "Could not open %s\n", file);
+			exit(1);
+		}
+	
+	
+	
 		FILE *fp;
 		fp = fopen(file, "a");
 		printf("file%d: %s\n",i, file);
@@ -105,40 +126,76 @@ int main(){
 		}
 		/*Putting the room name inside the text*/
 		fprintf(fp, "\nROOM NAME: %s\n", title[i]);
-		
+		printf("\nROOM NAME: %s\n", title[i]);
 		/*Assinging Connectionsrand */
-		
+			q = 0;
 			q = rand() % 4;
 			q = q+3;
-		for (k =1; k < q; k++){
+			printf("This room will get %d connections\n", q);
+			k = 1;
+		
+			
+			
 			if(i == 0){
-			fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
-						
-			}
-			else if( i == 5){
-			fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
-			}
-			else {
-				if (i < k)
-					fprintf(fp, "CONNECTION %d: %s\n",k, title[k-i]);
-				if(i >= k)
+				for (k =1; k < q; k++){
 					fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
+					printf("CONNECTION %d: %s\n",k, title[i+k]);
+				}	
+			}
+			
+			else if( i == 5){
+				for (k =1; k <= q; k++){
+					fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
+					printf("CONNECTION %d: %s\n",k, title[i-k]);
+				}
+			}
+			
+			else {
+				if (i < 3){
+					k = 1;
+					fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
+					fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
+					
+					printf("CONNECTION %d: %s\n",k, title[i-k]);
+					printf("CONNECTION %d: %s\n",(k+1), title[i+k]);
+						for (k =2; k <= q; k++){
+							fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
+							printf("CONNECTION %d: %s\n",k, title[i+k]);
+					}
+				}
+				if(i >= 3)
+					k = 1;
+					fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
+					fprintf(fp, "CONNECTION %d: %s\n",k, title[i+k]);
+					
+					printf("CONNECTION %d: %s\n",k, title[i-k]);
+					printf("CONNECTION %d: %s\n",(k+1), title[i+k]);
+					
+					
+					for (k =2; k <= q; k++){
+						fprintf(fp, "CONNECTION %d: %s\n",k, title[i-k]);
+						printf("CONNECTION %d: %s\n",k, title[i-k]);
+						}
+					
 			}
 			
 			
 			
-		}
+		/*}*/
 		
 				
-		/*Assign a room type*/
+		/*Assign a room type */
 		if (i == 0){
 		fprintf(fp, "Room TYPE: START_ROOM\n", title[i]);
+		printf("Room TYPE: START_ROOM\n", title[i]);
+		
 		}
 		else if(i == 5){
 			fprintf(fp, "Room TYPE: END_ROOM\n", title[i]);
+			printf("Room TYPE: END_ROOM\n", title[i]);
 		}
 		else{
-			fprintf(fp, "Room TYPE: MID_ROOM\n\n", title[i]);
+			printf("Room TYPE: MID_ROOM\n\n", title[i]);
 		}
 		
 		fclose(fp);
