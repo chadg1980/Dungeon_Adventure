@@ -18,7 +18,6 @@
 struct thisRoom{
 	char roomName[20];		//just the name of the room
 	char fullName[80];		//full path and file name of each room file
-				
 	int type;				//type string in file, but int for game. (1 start, 3 finish, 2 mid)
 	char connection[10][80];	//Connection 1 to 6
 	int conCount;
@@ -36,18 +35,15 @@ void swap (int *a, int *b){
 /*function to randomize the rooms*/
 void randArr(int arr[], int n){
 	int j, k;
-	
-	
 	for (j = n-1; j > 0; j--){
 		k = rand() % (j+1);
 		swap(&arr[j], &arr[k]);
 	}
 }
 
+/*another randomizer function*/
 void AssignRoom(int arr[], int n){
 	int j, k;
-	
-	
 	for (j = n-1; j > 0; j--){
 		k = rand() % (j+1);
 		swap(&arr[j], &arr[k]);
@@ -55,14 +51,14 @@ void AssignRoom(int arr[], int n){
 }
 
 
-/*double check the numbers are random*/
+/*double check the numbers are random Not used in the final product*/
 void printArr( int arr[], int n){
 	int i;
 	for (i = 0; i < n; i++)
 		printf("num: %d, ", arr[i]);
 		printf("\n");
 }
-
+/*get the permission and return them in octal*/
 int permissions(){
 	/*I got a hint about file permission being octal
 	http://bytes.com/topic/c/answers/459585-string-octal */
@@ -80,7 +76,7 @@ int main(){
 		int myPid = getpid();
 		char buffer[33];
 		int perm;
-		int i;
+		int i, x, len;
 		char myname[33] = "glaserc.rooms.";
 		char dirname[66];
 		int n = 10;
@@ -98,7 +94,7 @@ int main(){
 		char conString[255];
 		int lob;
 		int counter;
-		int x, len;
+		
 		int checker;
 		char inFileCon[10][255];
 		int steps = 0;
@@ -114,27 +110,21 @@ int main(){
 			}
 		
 		
-		/* to check, must uncomment the function also
+		/* to check the array is random, must uncomment
 		printArr(arr, n);*/
 		
 		/*get permissions (octal)*/
 		perm = permissions();
 		
 		/*------------get PID as int then int to string-----------*/
-		
 		snprintf(buffer, 33, "%d", myPid);
-		/*printf("buffer is: %s\n", buffer);*/
 		
-		/*---------------append pid to dirname--------------------*/
-		/*strcat(dirname, buffer);*/
+		
+		/*------append pid to dirname and creat the directory------*/
+		
 		snprintf(dirname, sizeof(myname)+sizeof(buffer)+1,  "%s%s",myname, buffer);
 		mkdir(dirname, perm);
 		
-		
-		/*Print for error checking Delete before handing in
-		printf("dirname: %s\n", dirname);
-		printf("PID: %d\n", myPid);
-		*/
 		
 		/*-----------Starting with file creation----------*/
 		
@@ -158,7 +148,7 @@ int main(){
 			/*printf("This roomname: %s\n", room[i].roomName);*/
 		}
 		
-		/*assign the room connections*/
+		/*-----assign the room connections-----*/
 		for(i = 1; i <=7; i++){
 			
 			int AssignRoom[] = {1, 2, 3, 4, 5, 6, 7};
@@ -175,6 +165,7 @@ int main(){
 			/*inner loop*/
 			for(k = 0; k <= q; k++){
 				
+				/*reset the return every loop*/
 				ret = 99;
 				num = AssignRoom[k];
 				
@@ -207,12 +198,10 @@ int main(){
 					room[i].conCount++;
 					snprintf(room[i].connection[room[i].conCount], sizeof(room[num].roomName),
 											room[num].roomName); 
-					/*
-					printf("%s, connects with ----->",room[i].roomName);
-					printf("CONNECTION %d: %s\n", room[i].conCount, room[num].roomName);
-					*/
+					
 					
 					/*reverse link*/
+					/*use kk as an int to shorten the variable from the struct*/
 					kk = room[num].conCount;
 				
 					/*check to see if there is already a connection*/
@@ -220,38 +209,34 @@ int main(){
 					for(l = 1; l <= REVconnections; l++){
 						ret = strcmp(room[num].connection[l], room[i].roomName);
 						if(Rret == 0){
-							/*printf("RETURN..already connected\n");*/
 							break;
 						}		
 					}
 					
+					/*if the connections are at 6 or the connection already exists break*/
 					if ((kk >= 6) || Rret == 0){
-						/*printf("connections maxed out\n");*/
 						break;
 					}
+					/*add the connection(reverse of the original connection*/
 					else{
-					
-					kk++;
-					room[num].conCount++;
-					snprintf(room[num].connection[kk], sizeof(room[i].roomName), room[i].roomName); 
-					/*
-					printf("REVERSE: %s  ------>", room[num].roomName);
-					printf("CONNECTION %d: %s\n", room[num].conCount, room[i].roomName);
-					*/
-					
+						kk++;
+						room[num].conCount++;
+						snprintf(room[num].connection[kk], sizeof(room[i].roomName), room[i].roomName); 
 					}
 				}
 			}
 		}
 		
-		/*make the files*/
+		/*----------make the files----------*/
+		/*one file is recreated each iteration*/
 		for( i = 1; i <= 7; i++){
 		
 			int w;
 			int j, cons;
-			/*file is recreated each iteration*/
+			
 			FILE *fpoint;
 					
+			/*make the funn name the directory name and the room name*/
 			snprintf(room[i].fullName, sizeof(dirname) 
 										+ sizeof(room[i].roomName) +1, "./%s/%s", dirname, room[i].roomName);
 				
@@ -268,18 +253,17 @@ int main(){
 			fprintf(fpoint, "ROOM NAME:%s\n", room[i].roomName); 
 			
 			
-			/*Assign Connections*/
+			/*Assign Connections which were made previously*/
 			cons = room[i].conCount;
-			for(j = 1; j <= cons; j++)
+			for(j = 1; j <= cons; j++){
 				fprintf(fpoint, "CONNECTION %d:%s\n", j, room[i].connection[j]);
-			
+			}
 			
 				/*assigning room type(pseudo random)*/
 				w = rand() % 3 + 1;
 				if( w == 1){
 					if(start == 0){
 						fprintf(fpoint, "ROOM TYPE:START_ROOM\n");
-						/*printf("ROOM TYPE: START_ROOM\n");*/
 						room[i].type = 1;
 						start++;
 					}
@@ -289,7 +273,6 @@ int main(){
 				if( w ==3){
 					if(end == 0){
 						fprintf(fpoint, "ROOM TYPE:END_ROOM\n");
-						/*printf("ROOM TYPE: END_ROOM\n");*/
 						room[i].type = 3;
 						end++;
 					}
@@ -299,27 +282,21 @@ int main(){
 				if (w == 2){
 					if (mid <= 5){
 						fprintf(fpoint, "ROOM TYPE:MID_ROOM\n");
-						/*printf("ROOM TYPE: MID_ROOM\n");*/
 						room[i].type = 2;
 						mid++;
 					}
 					else if(start == 0){
 						fprintf(fpoint, "ROOM TYPE:START_ROOM\n");
-						/*printf("ROOM TYPE: START_ROOM\n");*/
 						room[i].type = 1;
 						start++;
 					}
 					else{
 						fprintf(fpoint, "ROOM TYPE:END_ROOM\n");
-						/*printf("ROOM TYPE: END_ROOM\n");*/
 						room[i].type = 3;
 						end++;
 					}
 				}
-				
-			
 			fclose(fpoint);
-			
 		}
 		
 			/*---------------Begin user interface--------------*/
@@ -335,27 +312,18 @@ int main(){
 				}
 			}
 			
+		/*The game stays in the do while loop until the final city is found or the process is killed*/
 		do{
-			
-			
-			
 			FILE *fplay;
 			fplay=fopen (curRoomFile, "r");
 			fseek(fplay, 10, SEEK_CUR);
 			
-			/*Current Location*/
-			
+			/*Get current location*/
 			fgets(playBuffer, 13, fplay); 
 			
 			
-			/*Possible connections*/
-			
+			/*Get possible connections*/
 			lob = room[i].conCount;
-			
-			
-			//snprintf(conString , 22,"%s,", "POSSIBLE CONNECTIONS:" ); 
-			
-			
 			for(counter = 1; counter <= lob; counter++){
 				fseek(fplay, 13, SEEK_CUR);
 				fgets(conCons, 13, fplay);
@@ -363,7 +331,7 @@ int main(){
 				snprintf(inFileCon[counter], sizeof(conCons), "%s", conCons);
 				strtok(conCons, "\n");
 				if(counter == 1){
-				snprintf(conString, sizeof(conCons),"%s, ", conCons );
+					snprintf(conString, sizeof(conCons),"%s, ", conCons );
 				}
 				else if(counter != lob){
 					snprintf(conString + strlen(conString), sizeof(conCons),"%s, ", conCons ); 
@@ -374,13 +342,16 @@ int main(){
 				}
 			}
 			
-			
+			/*print the location, and connections, and get user input*/
+			/*inside a do while loop, so it can repeat if user enters bad input*/
 			do{
 				printf("CURRENT LOCATION: %s", playBuffer);
 				printf("POSSIBLE CONNECTIONS: %s.\n", conString);
 				printf("WHERE TO? >");
 				fgets(nextCity, 255, stdin);
 				printf("\n");
+				
+				/*reset checker each iteration*/
 				checker = 99;
 				for(x = 1; x <= lob; x++){
 					checker = strcmp(nextCity, inFileCon[x]);
@@ -394,34 +365,31 @@ int main(){
 				
 				
 			}while(checker !=0);
-			/*compare nextCity with connections so make sure it is valid*/
 			
-					fclose(fplay);
+			
+			fclose(fplay);
 					
+					/*compare nextCity with connections so make sure it is valid*/
 					checker = 99;
 					strtok(nextCity, "\n");
 					for(i = 1; i <= 7; i++){
-					 checker = strcmp(nextCity, room[i].roomName);
-					 
-					 if(checker == 0){
-						snprintf(curRoomFile, sizeof(room[i].fullName), room[i].fullName);
-						break;
+						checker = strcmp(nextCity, room[i].roomName);
+						 
+						if(checker == 0){
+							snprintf(curRoomFile, sizeof(room[i].fullName), room[i].fullName);
+							break;
 						}
-					
+						
 					}
-					/*
-					printf("start next city\n");
-					printf("%s\n", curRoomFile);
-					*/
 					
 					steps+=1;
 					snprintf(path[steps], sizeof(room[i].roomName), room[i].roomName);
 			}while(room[i].type != 3);
 			
-						
+			/*Victory Message *HAPPY DANCE* */		
 			printf("YOU HAVE FOUND THE END CITY. CONGRATULATIONS!\n");
 			printf("YOU ARE GOING TO DISNEY WORLD!\n");
-			printf("YOU TOOK %d FLIGHTS. YOUR PATH TO VICTORY WAS:\n", steps);
+			printf("YOU TOOK %d STEPS. YOUR PATH TO VICTORY WAS:\n", steps);
 			
 			for(x = 1; x <=steps; x++){
 				printf("%s\n", path[x]);
