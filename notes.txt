@@ -1,2 +1,0 @@
- sprintf(dir, "tabachnj.rooms.%d", r);
-sprintf(filename, "./%s/%s", dir, currVert->roomName); 
